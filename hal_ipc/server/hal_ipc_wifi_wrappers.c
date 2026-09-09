@@ -80,6 +80,7 @@ INT wifi_hal_getRadioChannelStats(INT radioIndex,
                                   INT array_size)
 {
     wifi_hal_dbg_print("%s:%d: Enter. Array size %d\n", __func__, __LINE__, array_size);
+    wifi_hal_dbg_print("%s:%d: bharathi enter \n", __func__, __LINE__);
 
     if (array_size <= 0) {
         return RETURN_ERR;
@@ -89,6 +90,7 @@ INT wifi_hal_getRadioChannelStats(INT radioIndex,
         wifi_hal_dbg_print("%s:%d: array_size %d is too big. Truncate.\n", __func__, __LINE__, array_size);
         array_size = HAL_IPC_RADIO_CHANNELS_MAX;
     }
+    wifi_hal_dbg_print("%s:%d: bharathi exit \n", __func__, __LINE__);
 
     return wifi_getRadioChannelStats(radioIndex, input_output_channelStats_array, array_size);
 }
@@ -472,6 +474,7 @@ INT wifi_hal_getAssociationReqIEs(  UINT apIndex,
 {
 
     wifi_hal_dbg_print("%s:%d: Enter.\n", __func__, __LINE__);
+    wifi_hal_dbg_print("%s:%d: bharathi Enter\n", __func__, __LINE__);
 
     wifi_interface_info_t *interface = NULL;
     struct sta_info *station = NULL;
@@ -499,6 +502,7 @@ INT wifi_hal_getAssociationReqIEs(  UINT apIndex,
     memcpy(req_ies, station->assoc_req, station->assoc_req_len);
     *req_ies_len = station->assoc_req_len;
     pthread_mutex_unlock(&g_wifi_hal.hapd_lock);
+    wifi_hal_dbg_print("%s:%d: bharathi Exit\n", __func__, __LINE__);
     return 0;
 }
 

@@ -96,6 +96,7 @@ int ipc_server_output(struct hal_ipc_processor_desc *desc,
     CHAR* output_string;
     wifi_associated_dev3_t *associated_dev_array;
     UINT req_ies_size_out = 0;
+    wifi_hal_dbg_print("%s:%d: bharathi Enter.\n", __func__, __LINE__);
 
     wifi_hal_dbg_print("%s:%d Enter: executing %s api in server\n", __func__, __LINE__, desc->name);
 
@@ -1137,6 +1138,7 @@ int ipc_server_output(struct hal_ipc_processor_desc *desc,
             goto error_happened;
             break;
     }
+    wifi_hal_dbg_print("%s:%d bharathi Exit\n", __func__, __LINE__);
 
     return 0;
 
