@@ -2209,15 +2209,17 @@ int process_frame_mgmt(wifi_interface_info_t *interface, struct ieee80211_mgmt *
         mgmt_type = WIFI_MGMT_FRAME_TYPE_ACTION;
         cat = mgmt->u.action.category;
 
-        wifi_hal_dbg_print("%s:%d: interface:%s received action frame from:%s to:%s, category:%d\n",
+        wifi_hal_dbg_print("%s:%d: interface:%s received action frame from:%s to:%s, category:%d len=%zu\n",
             __func__, __LINE__, interface->name, to_mac_str(mgmt->sa, sta_mac_str),
-            to_mac_str(mgmt->da, frame_da_str), cat);
+            to_mac_str(mgmt->da, frame_da_str), cat, len);
 
         switch (cat) {
         case wifi_action_frame_wnm:
+            wifi_hal_dbg_print("%s:%d: WNM RX path: category=%d, sa=" MACSTR ", da=" MACSTR ", len=%zu\n",
+                __func__, __LINE__, cat, MAC2STR(mgmt->sa), MAC2STR(mgmt->da), len);
             // - don't handle frame by calling wpa_supplicant_event() if action frame was already handled:
             forward_frame = (WIFI_HAL_UNSUPPORTED == handle_wnm_action_frame(interface, sta, mgmt, len));
-            wifi_hal_dbg_print("%s:%d: bharathi received wnm action frame\n",__func__, __LINE__);
+            wifi_hal_dbg_print("%s:%d: bharathi received wnm action frame, forward_frame=%d\n", __func__, __LINE__, forward_frame);
             break;
         case wifi_action_frame_type_radio_msmt:
             // - don't handle frame by calling wpa_supplicant_event() if action frame was already handled:
