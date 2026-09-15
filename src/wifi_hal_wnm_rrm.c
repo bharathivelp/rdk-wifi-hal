@@ -419,13 +419,17 @@ static int handle_rx_bss_trans_mgmt_resp(wifi_interface_info_t *interface,
     struct hostapd_data *hapd = &interface->u.ap.hapd;
     int ap_index = interface->vap_info.vap_index;
 
+    wifi_hal_dbg_print("%s:%d ENTER: bharathi handle_rx_bss_trans_mgmt_resp from " MACSTR " len=%zu\n", __func__, __LINE__, MAC2STR(addr), len);
+
     if (!is_valid_ap_index(ap_index)) {
         wifi_hal_error_print("%s:%d invalid ap_index=%d\n", __func__, __LINE__, ap_index);
 	    return WIFI_HAL_ERROR;
     }
 
-    if (NULL == callbacks->btm_callback[ap_index].response_callback)
+    if (NULL == callbacks->btm_callback[ap_index].response_callback) {
+        wifi_hal_dbg_print("%s:%d:bharathi  BTM callback registered=%s\n", __func__, __LINE__, callbacks->btm_callback[ap_index].response_callback ? "YES" : "NO");
         return WIFI_HAL_SUCCESS;
+    }
 
     pthread_mutex_lock(&g_wifi_hal.hapd_lock);
     mutex_locked = true;
@@ -437,6 +441,7 @@ static int handle_rx_bss_trans_mgmt_resp(wifi_interface_info_t *interface,
 #endif /* CONFIG_MBO */
 
     if (!enabled) {
+        wifi_hal_dbg_print("%s:%d: bharathi BTM enabled=%d\n", __func__, __LINE__, enabled);
         wifi_hal_dbg_print("%s:%d: Ignore BSS Transition Management Response from " MACSTR
             " since BSS Transition Management is disabled\n", __func__, __LINE__, MAC2STR(addr));
         ret = WIFI_HAL_SUCCESS;
@@ -444,6 +449,7 @@ static int handle_rx_bss_trans_mgmt_resp(wifi_interface_info_t *interface,
     }
 
     if (len < sizeof(struct bss_tm_resp)) {
+        wifi_hal_dbg_print("%s:%d: bharathi Received len=%zu expected>=%zu\n", __func__, __LINE__, len, sizeof(struct bss_tm_resp));
         wifi_hal_error_print("%s:%d: WNM: Ignore too short BSS Transition Management Response from " MACSTR "\n", __func__, __LINE__, MAC2STR(addr));
         goto exit;
     }
@@ -586,6 +592,7 @@ int handle_wnm_action_frame(wifi_interface_info_t *interface, const mac_address_
         case WNM_BSS_TRANS_MGMT_QUERY:
             return handle_rx_bss_trans_mgmt_query(interface, /*mgmt->sa*/ sta, (struct bss_tm_query*)payload, plen);
         case WNM_BSS_TRANS_MGMT_RESP:
+            wifi_hal_dbg_print("%s:%d: bharathi WNM: Received BSS Transition Management Response frame\n", __func__, __LINE__);
             return handle_rx_bss_trans_mgmt_resp(interface, /*mgmt->sa*/ sta, (struct bss_tm_resp*)payload, plen);
         case WNM_NOTIFICATION_REQ:
             return handle_rx_wnm_notification_req(interface, /*mgmt->sa*/ sta, (struct wnm_notif_req*)payload, plen);

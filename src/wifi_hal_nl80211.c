@@ -2217,6 +2217,7 @@ int process_frame_mgmt(wifi_interface_info_t *interface, struct ieee80211_mgmt *
         case wifi_action_frame_wnm:
             // - don't handle frame by calling wpa_supplicant_event() if action frame was already handled:
             forward_frame = (WIFI_HAL_UNSUPPORTED == handle_wnm_action_frame(interface, sta, mgmt, len));
+            wifi_hal_dbg_print("%s:%d: bharathi received wnm action frame\n",__func__, __LINE__);
             break;
         case wifi_action_frame_type_radio_msmt:
             // - don't handle frame by calling wpa_supplicant_event() if action frame was already handled:
