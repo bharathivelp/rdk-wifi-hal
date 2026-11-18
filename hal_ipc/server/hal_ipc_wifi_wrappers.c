@@ -467,7 +467,7 @@ INT wifi_hal_getAssociationReqIEs(  UINT apIndex,
                                     UINT *req_ies_len)
 {
 
-    wifi_hal_dbg_print("%s:%d: Enter.\n", __func__, __LINE__);
+    wifi_hal_dbg_print("%s:%d: bharathi Enter.\n", __func__, __LINE__);
 
     wifi_interface_info_t *interface = NULL;
     struct sta_info *station = NULL;
@@ -479,6 +479,11 @@ INT wifi_hal_getAssociationReqIEs(  UINT apIndex,
     }
     pthread_mutex_lock(&g_wifi_hal.hapd_lock);
     station = ap_get_sta(&interface->u.ap.hapd, (const u8 *) clientMacAddress);
+    if (station == NULL) {
+        pthread_mutex_unlock(&g_wifi_hal.hapd_lock);
+        wifi_hal_error_print("%s:%d station not found\n", __func__, __LINE__);
+        return RETURN_ERR;
+    }
     if (req_ies_size < station->assoc_req_len) {
       wifi_hal_error_print("%s:%d: req_ies_size %u is too small (should be at least %zu)\n", __func__, __LINE__, req_ies_size, station->assoc_req_len);
       pthread_mutex_unlock(&g_wifi_hal.hapd_lock);
@@ -488,6 +493,7 @@ INT wifi_hal_getAssociationReqIEs(  UINT apIndex,
     memcpy(req_ies, station->assoc_req, station->assoc_req_len);
     *req_ies_len = station->assoc_req_len;
     pthread_mutex_unlock(&g_wifi_hal.hapd_lock);
+    wifi_hal_dbg_print("%s:%d: bharathi Exit.\n", __func__, __LINE__);
     return 0;
 }
 

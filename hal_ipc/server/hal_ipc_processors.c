@@ -96,6 +96,7 @@ int ipc_server_output(struct hal_ipc_processor_desc *desc,
     CHAR* output_string;
     wifi_associated_dev3_t *associated_dev_array;
     UINT req_ies_size_out = 0;
+    wifi_hal_dbg_print("%s:%d: bharathi Enter.\n", __func__, __LINE__);
 
     wifi_hal_dbg_print("%s:%d Enter: executing %s api in server\n", __func__, __LINE__, desc->name);
 
@@ -172,6 +173,12 @@ int ipc_server_output(struct hal_ipc_processor_desc *desc,
             array_size = desc->in.get_radio_channel_stats.array_size;
 
             wifi_channelStats_t *input_output_channelStats_array, *chan_stats_tmp;
+
+             if (array_size <= 0) {
+                wifi_hal_error_print("%s:%d: Invalid radio channel stats array_size=%d\n",
+                    __func__, __LINE__, array_size);
+                goto error_happened;
+            }
 
             if (array_size > HAL_IPC_RADIO_CHANNELS_MAX) {
                 array_size = HAL_IPC_RADIO_CHANNELS_MAX;
@@ -1138,6 +1145,7 @@ int ipc_server_output(struct hal_ipc_processor_desc *desc,
             break;
     }
 
+    wifi_hal_dbg_print("%s:%d: bharathi Exit\n", __func__, __LINE__);
     return 0;
 
 error_happened:
